@@ -73,17 +73,39 @@ module Api
         end
       end
 
+
+
       private
         # Use callbacks to share common setup or constraints between actions.
       def set_movie
         begin
           @movie = Tmdb::Movie.detail(params[:id].to_i).to_h
-          toHash = [:genres, :production_companies, :production_countries, :spoken_languages]
+          get_more_info params[:id].to_i
+          toHash = [:genres, :production_companies, :production_countries, :spoken_languages, :cast, :crew, :director, :videos]
           toHash.each do |prop|
             convert_to_hash prop
           end
         rescue Tmdb::Error => e
           @movie = []
+        end
+      end
+
+      def get_more_info id
+        begin
+          crew =  Tmdb::Movie.crew(id)
+          @movie[:crew] = crew
+
+          cast =  Tmdb::Movie.cast(id)
+          @movie[:cast] = cast
+
+          director =  Tmdb::Movie.director(id)
+          @movie[:director] = director
+
+          videos =  Tmdb::Movie.videos(id)
+          @movie[:videos] = videos
+
+        rescue Tmdb::Error => e
+          puts e
         end
       end
 

@@ -78,13 +78,29 @@ module Api
       def set_show
         begin
           @show = Tmdb::TV.detail(params[:id].to_i).to_h
-          toHash = [:created_by, :networks, :seasons, :genres, :production_companies]
+          get_more_info params[:id].to_i
+          toHash = [:created_by, :networks, :seasons, :genres, :production_companies, :cast, :crew, :videos]
           toHash.each do |prop|
             convert_to_hash prop
           end
-          puts @show
         rescue Tmdb::Error => e
           @show = []
+        end
+      end
+
+      def get_more_info id
+        begin
+          crew =  Tmdb::TV.crew(id)
+          @show[:crew] = crew
+
+          cast =  Tmdb::TV.cast(id)
+          @show[:cast] = cast
+
+          videos =  Tmdb::TV.videos(id)
+          @show[:videos] = videos
+
+        rescue Tmdb::Error => e
+          puts e
         end
       end
 

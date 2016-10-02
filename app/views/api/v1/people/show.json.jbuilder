@@ -1,1 +1,1 @@
-json.merge!  @person
+json.merge! @person
