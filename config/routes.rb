@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
-  namespace :api, :defaults => {format: :json} do
+
+  
+  namespace :api, defaults: {format: :json} do
     namespace :v1 do
+
+         
+
         get '/people/details/:id', to: 'people#show'
         get '/people/popular', to: 'people#popular'
 
@@ -9,10 +14,15 @@ Rails.application.routes.draw do
 
         get '/movies/details/:id', to: 'movies#show'
         get '/movies/popular', to: 'movies#popular'
-
-      # application root
     end
   end
+  mount_devise_token_auth_for 'User', at: '/api/v1/auth' 
+  #application root
+  root 'home#index'
+
+
+
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

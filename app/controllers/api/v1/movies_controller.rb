@@ -1,7 +1,9 @@
 module Api
   module V1
     class MoviesController < ApplicationController
+      before_action :authenticate_user!
       before_action :set_movie, only: [:show, :edit, :update, :destroy]
+
 
       # GET /movies
       # GET /movies.json

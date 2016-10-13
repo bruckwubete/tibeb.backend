@@ -1,33 +1,67 @@
 class User
-  attr_protected :provider, :uid, :name, :email
-  include Mongoid::Document
-  field :provider, type: String
-  field :uid, type: String
-  field :name, type: String
-  field :email, type: String
-  field :oauth_token, type: String
-  filed :oauth_expires_at, type: DateTime
-
-
-  def self.create_with_omniauth(auth)
-    create! do |user|
-      user.provider = auth['provider']
-      user.uid = auth['uid']
-      if auth['info']
-        user.name = auth['info']['name'] || ""
-        user.email = auth['info']['email'] || ""
-      end
-    end
+    # Get rid of devise-token_auth issues from activerecord
+  def self.table_exists?
+    true
   end
 
-  def self.from_omniauth(auth)
-  where(auth.slice(:provider, :uid)).first_or_initialize.tap do |user|
-    user.provider = auth.provider
-    user.uid = auth.uid
-    user.name = auth.info.name
-    user.oauth_token = auth.credentials.token
-    user.oauth_expires_at = Time.at(auth.credentials.expires_at)
-    user.save!
+  def self.columns_hash
+    # Just fake it for devise-token-auth; since this model is schema-less, this method is not really useful otherwise
+    {} # An empty hash, so tokens_has_json_column_type will return false, which is probably what you want for Monogoid/BSON
   end
+
+  def self.serialize(*args)
+
+  end
+    include Mongoid::Document
+  include Mongoid::Timestamps::Short
+  include DeviseTokenAuth::Concerns::User
+
+  def self.send_on_create_confirmation_instructions
+
 end
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :trackable, :validatable
+
+    field :email, type: String
+  field :encrypted_password, type: String, default: ''
+
+  ## Recoverable
+  field :reset_password_token, type: String
+  field :reset_password_sent_at, type: Time
+
+  ## Rememberable
+  field :remember_created_at, type: Time
+
+  ## Trackable
+  field :sign_in_count, type: Integer, default: 0
+  field :current_sign_in_at, type: Time
+  field :last_sign_in_at, type: Time
+  field :current_sign_in_ip, type: String
+  field :last_sign_in_ip, type: String
+
+  ## Confirmable
+  field :confirmation_token, type: String
+  field :confirmed_at, type: Time
+  field :confirmation_sent_at, type: Time
+  field :unconfirmed_email, type: String
+
+  ## User Info
+  field :name, type: String
+  field :nickname, type: String
+  field :image, type: String
+
+  ## unique oauth id
+  field :provider, type: String
+  field :uid, default: ""
+
+  ## Tokens
+  field :tokens, type: Hash, default: { }
+
+  ## Index
+  index({email: 1, uid: 1, reset_password_token: 1}, {unique: true})
+
+  ## Validation
+  validates_uniqueness_of :email, :uid
 end
