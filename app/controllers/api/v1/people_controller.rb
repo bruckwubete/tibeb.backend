@@ -1,6 +1,7 @@
 module Api
   module V1
     class PeopleController < ApplicationController
+      before_action :authenticate_user!
       before_action :set_person, only: [:show, :edit, :update, :destroy]
 
       # GET /people
