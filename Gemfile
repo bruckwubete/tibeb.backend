@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.3'
+gem 'rails', '4.2.6'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -23,7 +23,7 @@ gem 'rack-cors', :require => 'rack/cors'
 gem 'sdoc', '~> 0.4.0', group: :doc
 
 
-gem 'mongoid' #, '~> 4', github: 'mongoid/mongoid'
+gem 'mongoid'
 
 gem 'bootstrap-sass', '~> 3.3.5'
 
@@ -34,9 +34,14 @@ gem 'angular-rails-templates', '~> 0.2.0'
 
 gem 'arcrud'
 
-# gem 'devise'
+gem 'devise'
 gem 'devise_token_auth', github: 'ybian/devise_token_auth', branch: 'mongoid'
-gem 'omniauth-github', github: 'intridea/omniauth-github'
+
+
+#omni_auth providers
+gem 'omniauth-github'
+gem 'omniauth-facebook'
+gem 'omniauth-google-oauth2'
 
 gem 'jbuilder'
 

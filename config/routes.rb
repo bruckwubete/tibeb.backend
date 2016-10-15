@@ -14,9 +14,15 @@ Rails.application.routes.draw do
 
         get '/movies/details/:id', to: 'movies#show'
         get '/movies/popular', to: 'movies#popular'
+        
+        
     end
   end
-  mount_devise_token_auth_for 'User', at: '/api/v1/auth' 
+  constraints format: :json do
+   mount_devise_token_auth_for 'User', at: '/api/v1/auth'
+ end
+  
+
   #application root
   root 'home#index'
 

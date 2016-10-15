@@ -19,10 +19,13 @@ class User
   def self.send_on_create_confirmation_instructions
 
 end
+
+ before_validation do
+    self.password = email if password.blank?
+ end
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
 
     field :email, type: String
   field :encrypted_password, type: String, default: ''
