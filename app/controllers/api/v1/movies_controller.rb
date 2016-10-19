@@ -1,7 +1,6 @@
 module Api
   module V1
     class MoviesController < ApplicationController
-      before_action :authenticate_user!
       before_action :set_movie, only: [:show, :edit, :update, :destroy]
 
 
@@ -65,13 +64,23 @@ module Api
         end
       end
 
-      # GET /people/popular
-      # GET /people/popular.json
+      # GET /movies/popular
+      # GET /movies/popular.json
       def popular
         @api_response = Tmdb::Discover.movie
         @movies = []
         @api_response.results.each do |movie|
           @movies.push(movie.to_h)
+        end
+      end
+
+      # GET /movies/search/:title
+      # GET /movies/search.json
+
+      def search
+        @api_response = Tmdb::Search.movie(params[:title]).to_h
+        @api_response[:results].each_with_index do |movie, index|
+          @api_response[:results][index] = movie.to_h
         end
       end
 

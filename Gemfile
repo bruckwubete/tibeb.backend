@@ -24,6 +24,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 
 gem 'mongoid'
+gem "mongo_session_store-rails4"
 
 gem 'bootstrap-sass', '~> 3.3.5'
 
@@ -41,6 +42,7 @@ gem 'devise_token_auth', github: 'ybian/devise_token_auth', branch: 'mongoid'
 #omni_auth providers
 gem 'omniauth-github'
 gem 'omniauth-facebook'
+gem 'omniauth-twitter'
 gem 'omniauth-google-oauth2'
 
 gem 'jbuilder'

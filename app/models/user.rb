@@ -21,7 +21,13 @@ class User
 end
 
  before_validation do
-    self.password = email if password.blank?
+    change = true
+    User.all.each do |user|
+      
+        change=false if  self.uid == user.uid
+      
+    end
+    self.password = email || 'default' if self.password.nil? and change
  end
 
   # Include default devise modules. Others available are:
