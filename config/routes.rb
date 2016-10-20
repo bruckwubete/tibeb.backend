@@ -17,6 +17,10 @@ Rails.application.routes.draw do
 
         get '/movies/search/:title', to: 'movies#search'
         
+        get '/movies/discover', to: 'movies#discover'
+        
+        get '/movies/genres', to: 'movies#genres'
+        
         
     end
   end
