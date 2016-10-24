@@ -1,24 +1,14 @@
 class User
-    # Get rid of devise-token_auth issues from activerecord
-  def self.table_exists?
-    true
-  end
 
-  def self.columns_hash
-    # Just fake it for devise-token-auth; since this model is schema-less, this method is not really useful otherwise
-    {} # An empty hash, so tokens_has_json_column_type will return false, which is probably what you want for Monogoid/BSON
-  end
+  include Mongoid::Document
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable and :omniauthable
+  devise :database_authenticatable, :registerable, :confirmable, :omniauthable,
+         :recoverable, :rememberable, :trackable, :validatable
 
-  def self.serialize(*args)
-
-  end
-    include Mongoid::Document
   include Mongoid::Timestamps::Short
   include DeviseTokenAuth::Concerns::User
 
-  def self.send_on_create_confirmation_instructions
-
-end
 
  before_validation do
     change = true
@@ -29,6 +19,8 @@ end
     end
     self.password = email || 'default' if self.password.nil? and change
  end
+ 
+ after_create :send_confirmation_email, if: -> { !Rails.env.test? && User.devise_modules.include?(:confirmable) }
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -73,4 +65,9 @@ end
 
   ## Validation
   validates_uniqueness_of :email, :uid
+  
+  private
+    def send_confirmation_email
+      self.send_confirmation_instructions
+    end
 end

@@ -67,12 +67,44 @@ module Api
     # GET /people/popular
     # GET /people/popular.json
     def popular
-      @api_response = Tmdb::Discover.tv
+      @api_response = Tmdb::TV.popular
       @shows = []
       @api_response.results.each do |show|
         @shows.push(show.to_h)
       end
     end
+  
+      # GET /shows/search/:title
+      # GET /shows/search.json
+
+      def search
+        @api_response = Tmdb::Search.tv(params[:title]).to_h
+        @api_response[:results].each_with_index do |movie, index|
+          @api_response[:results][index] = movie.to_h
+        end
+      end
+      
+       # GET /movies/discover
+      # GET /movies/discover.json
+
+      def discover
+        puts params
+        @api_response = Tmdb::Discover.tv(params).to_h
+        @api_response[:results].each_with_index do |movie, index|
+          @api_response[:results][index] = movie.to_h
+        end
+      end
+      
+      # GET /movies/genres
+      # GET /movies/genres.json
+
+      def genres
+        @api_response = Tmdb::Genre.tv_list
+        @api_response.each_with_index do |genre, index|
+          @api_response[index] = genre.to_h
+        end
+      end
+
 
     private
       # Use callbacks to share common setup or constraints between actions.

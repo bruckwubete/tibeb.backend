@@ -1,25 +1,26 @@
 Rails.application.routes.draw do
 
-  
+
   namespace :api, defaults: {format: :json} do
     namespace :v1 do
-
-         
-
-        get '/people/details/:id', to: 'people#show'
-        get '/people/popular', to: 'people#popular'
+      
+        get '/movies/details/:id', to: 'movies#show'
+        get '/movies/popular', to: 'movies#popular'
+        get '/movies/search/:title', to: 'movies#search'
+        get '/movies/discover', to: 'movies#discover'
+        get '/movies/genres', to: 'movies#genres'
 
         get '/shows/details/:id', to: 'shows#show'
         get '/shows/popular', to: 'shows#popular'
-
-        get '/movies/details/:id', to: 'movies#show'
-        get '/movies/popular', to: 'movies#popular'
-
-        get '/movies/search/:title', to: 'movies#search'
+        get '/shows/search/:title', to: 'shows#search'
+        get '/shows/discover', to: 'shows#discover'
+        get '/shows/genres', to: 'shows#genres'
         
-        get '/movies/discover', to: 'movies#discover'
-        
-        get '/movies/genres', to: 'movies#genres'
+        get '/people/details/:id', to: 'people#show'
+        get '/people/popular', to: 'people#popular'
+        get '/people/search/:title', to: 'people#search'
+        get '/people/discover', to: 'people#discover'
+        get '/people/genres', to: 'people#genres'
         
         
     end

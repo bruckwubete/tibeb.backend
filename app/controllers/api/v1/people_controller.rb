@@ -75,6 +75,7 @@ module Api
         @people.push(person.to_h)
       end
     end
+    
 
     private
       # Use callbacks to share common setup or constraints between actions.

@@ -67,7 +67,7 @@ module Api
       # GET /movies/popular
       # GET /movies/popular.json
       def popular
-        @api_response = Tmdb::Discover.movie
+        @api_response = Tmdb::Movie.popular
         @movies = []
         @api_response.results.each do |movie|
           @movies.push(movie.to_h)
