@@ -23,6 +23,7 @@ gem 'rack-cors', :require => 'rack/cors'
 gem 'sdoc', '~> 0.4.0', group: :doc
 
 
+
 gem 'mongoid'
 gem "mongo_session_store-rails4"
 
@@ -38,7 +39,7 @@ gem 'arcrud'
 gem 'devise'
 gem 'devise_token_auth', github: 'ybian/devise_token_auth', branch: 'mongoid'
 
-
+gem 'mailgun_rails'
 #omni_auth providers
 gem 'omniauth-github'
 gem 'omniauth-facebook'

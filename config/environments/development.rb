@@ -4,8 +4,12 @@ Rails.application.configure do
   # In the development environment your application's code is reloaded on
   # every request. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
-
-  config.action_mailer.default_url_options = { host: 'http:localhost', port: 3000 }
+  config.action_mailer.default_url_options = { :host => 'http://angularmaterial-bruck.c9users.io' }
+  config.action_mailer.delivery_method = :mailgun
+  config.action_mailer.mailgun_settings = {
+    api_key: 'key-29796a58b2ad1ef4247fcfdbd8289c27',
+    domain: 'sandbox35501bb74b754c4aa6fe071f94963720.mailgun.org'
+  }
 
   
   config.cache_classes = false

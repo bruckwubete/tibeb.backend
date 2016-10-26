@@ -1,23 +1,22 @@
 class User
 
   include Mongoid::Document
+  include Mongoid::Timestamps::Short
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :confirmable, :omniauthable,
-         :recoverable, :rememberable, :trackable, :validatable
+         :recoverable, :rememberable, :trackable
 
-  include Mongoid::Timestamps::Short
+  
   include DeviseTokenAuth::Concerns::User
 
 
- before_validation do
-    change = true
+ before_create do
     User.all.each do |user|
-      
-        change=false if  self.uid == user.uid
-      
+        skip_create! if  email == user.uid
+        return false
     end
-    self.password = email || 'default' if self.password.nil? and change
+    self.password = email || 'default' if self.password.nil?
  end
  
  after_create :send_confirmation_email, if: -> { !Rails.env.test? && User.devise_modules.include?(:confirmable) }

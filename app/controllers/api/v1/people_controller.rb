@@ -66,13 +66,23 @@ module Api
     # GET /people/popular
     # GET /people/popular.json
     def popular
-      @api_response = Tmdb::Person.popular
-      @people = []
-      @api_response.results.each do |person|
+      @api_response = (Tmdb::Person.popular(params)).to_h
+      
+      @api_response[:results].each_with_index do |person, person_index|
+        @api_response[:results][person_index] = person.to_h
         person[:known_for].each_with_index do |movie, index|
           person[:known_for][index] = movie.to_h
         end
-        @people.push(person.to_h)
+      end
+    end
+    
+    # GET /people/search/:title
+    # GET /people/search.json
+
+    def search
+      @api_response = Tmdb::Search.person(params[:title]).to_h
+      @api_response[:results].each_with_index do |movie, index|
+        @api_response[:results][index] = movie.to_h
       end
     end
     

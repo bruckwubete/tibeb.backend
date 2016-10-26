@@ -19,8 +19,6 @@ Rails.application.routes.draw do
         get '/people/details/:id', to: 'people#show'
         get '/people/popular', to: 'people#popular'
         get '/people/search/:title', to: 'people#search'
-        get '/people/discover', to: 'people#discover'
-        get '/people/genres', to: 'people#genres'
         
         
     end

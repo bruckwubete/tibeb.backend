@@ -1,1 +1,1 @@
-json.array! @people
+json.merge! @api_response

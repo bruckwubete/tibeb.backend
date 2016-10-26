@@ -99,6 +99,10 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
+    mailgun_rails (0.8.0)
+      actionmailer (>= 3.2.13)
+      json (>= 1.7.7)
+      rest-client (>= 1.6.7)
     mime-types (2.99.3)
     mini_portile2 (2.1.0)
     minitest (5.9.1)
@@ -245,6 +249,7 @@ DEPENDENCIES
   devise_token_auth!
   jbuilder
   jquery-rails
+  mailgun_rails
   mongo_session_store-rails4
   mongoid
   omniauth-facebook
