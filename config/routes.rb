@@ -3,19 +3,23 @@ Rails.application.routes.draw do
 
   namespace :api, defaults: {format: :json} do
     namespace :v1 do
-      
+        
+        #movies routes
         get '/movies/details/:id', to: 'movies#show'
         get '/movies/popular', to: 'movies#popular'
         get '/movies/search/:title', to: 'movies#search'
         get '/movies/discover', to: 'movies#discover'
         get '/movies/genres', to: 'movies#genres'
-
+        
+        #shows routes
         get '/shows/details/:id', to: 'shows#show'
         get '/shows/popular', to: 'shows#popular'
         get '/shows/search/:title', to: 'shows#search'
         get '/shows/discover', to: 'shows#discover'
         get '/shows/genres', to: 'shows#genres'
         
+        
+        #people routes
         get '/people/details/:id', to: 'people#show'
         get '/people/popular', to: 'people#popular'
         get '/people/search/:title', to: 'people#search'
