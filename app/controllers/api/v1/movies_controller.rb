@@ -1,8 +1,10 @@
+require 'net/http'
+require 'uri'
 module Api
   module V1
     class MoviesController < ApplicationController
       #before_action :authenticate_user!
-      before_action :set_movie, only: [:show]
+      before_action :set_movie, only: [:show, :watch]
 
 
 
@@ -49,6 +51,122 @@ module Api
         @api_response.each_with_index do |genre, index|
           @api_response[index] = genre.to_h
         end
+      end
+      
+      def watch
+        uri = URI.parse("https://api.apidomain.info/movie?imdb=" + @movie[:imdb_id])
+        puts uri.to_s
+        request = Net::HTTP::Get.new(uri)
+        #request.basic_auth("bruckwendu80@gmail.com", "Myseedr%5")
+        
+        req_options = {
+          use_ssl: uri.scheme == "https",
+        }
+        
+        items_response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+          response = http.request(request)
+          if response.code != 200.to_s
+            render :json => @movie and return 
+          end
+          JSON.parse response.body
+        end
+        
+        downloaded_folder = nil 
+        uri = URI.parse("https://www.seedr.cc/rest/folder")
+        request = Net::HTTP::Get.new(uri)
+        request.basic_auth("bruckwendu80@gmail.com", "Myseedr%5")
+        
+        req_options = {
+          use_ssl: uri.scheme == "https",
+        }
+        
+        folders_response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+          JSON.parse http.request(request).body
+        end
+        
+        puts folders_response
+        
+        downloaded_folder = folders_response['folders'].detect{|f|
+          puts ['items'][0]['file']
+          items_response['items'][0]['file'].include? f['name'] 
+        }
+        
+        
+        
+        if not downloaded_folder
+          uri = URI.parse("https://www.seedr.cc/rest/torrent/magnet")
+          request = Net::HTTP::Post.new(uri)
+          request.basic_auth("bruckwendu80@gmail.com", "Myseedr%5")
+          request.set_form_data(
+            "magnet" => items_response['items'][0]['torrent_magnet'],
+          )
+          
+          req_options = {
+            use_ssl: uri.scheme == "https",
+          }
+          
+          magnet_response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+           JSON.parse http.request(request).body
+          end
+          
+          index = 0
+          while not downloaded_folder and index < 5 do
+            uri = URI.parse("https://www.seedr.cc/rest/folder")
+            request = Net::HTTP::Get.new(uri)
+            request.basic_auth("bruckwendu80@gmail.com", "Myseedr%5")
+            
+            req_options = {
+              use_ssl: uri.scheme == "https",
+            }
+            
+            folders_response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+              JSON.parse http.request(request).body
+            end
+            
+            downloaded_folder = folders_response['folders'].detect{|f|
+              puts f['name']
+              puts magnet_response['title']
+              f['name'].include? magnet_response['title']
+            }
+            
+            sleep 3
+            index = index + 1
+          end
+        end
+        
+        puts downloaded_folder
+          
+        uri = URI.parse("https://www.seedr.cc/rest/folder/" + downloaded_folder['id'].to_s)
+        request = Net::HTTP::Get.new(uri)
+        request.basic_auth("bruckwendu80@gmail.com", "Myseedr%5")
+        
+        req_options = {
+          use_ssl: uri.scheme == "https",
+        }
+        
+        files_response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+         JSON.parse http.request(request).body
+        end
+        
+
+        
+        downloaded_file = files_response['files'].detect{|f| f['name'].include? items_response['items'][0]['file']}
+        
+                
+        uri = URI.parse("https://www.seedr.cc/rest/file/" + downloaded_file['id'].to_s + '/hls')
+        request = Net::HTTP::Get.new(uri)
+        request.basic_auth("bruckwendu80@gmail.com", "Myseedr%5")
+        
+        req_options = {
+          use_ssl: uri.scheme == "https",
+        }
+        
+        hls_response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+          http.request(request)
+        end
+          
+         @movie[:hls] = hls_response['location']
+        
       end
 
 

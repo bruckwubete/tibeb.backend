@@ -6,6 +6,7 @@ Rails.application.routes.draw do
         
         #movies routes
         get '/movies/details/:id', to: 'movies#show'
+        get '/movies/watch/:id', to: 'movies#watch'
         get '/movies/popular', to: 'movies#popular'
         get '/movies/search/:title', to: 'movies#search'
         get '/movies/discover', to: 'movies#discover'

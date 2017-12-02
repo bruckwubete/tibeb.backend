@@ -8,6 +8,8 @@ module Api
       # GET /shows/1
       # GET /shows/1.json
       def show
+        puts @show
+        
       end
 
       # GET /people/popular

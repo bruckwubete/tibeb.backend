@@ -10,6 +10,18 @@ Rails.application.configure do
     api_key: 'key-29796a58b2ad1ef4247fcfdbd8289c27',
     domain: 'sandbox35501bb74b754c4aa6fe071f94963720.mailgun.org'
   }
+  
+  # config.action_mailer.delivery_method = :smtp
+
+  # config.action_mailer.smtp_settings = {
+  #   :enable_starttls_auto => true,
+  #   :address => "smtp.gmail.com",
+  #   :port => 587,
+  #   :domain => "gmail.com",
+  #   :authentication => :login,
+  #   :user_name => "bruckwendu80@gmail.com",
+  #   :password => "Mynameissalem%5",
+  # }
 
   
   config.cache_classes = false
