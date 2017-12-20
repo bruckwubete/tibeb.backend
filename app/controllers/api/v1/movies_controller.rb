@@ -54,7 +54,8 @@ module Api
       end
       
       def watch
-        uri = URI.parse("https://api.apidomain.info/movie?imdb=" + @movie[:imdb_id])
+        
+        uri = URI.parse("https://tv-v2.api-fetch.website/movie/" + @movie[:imdb_id])
         puts uri.to_s
         request = Net::HTTP::Get.new(uri)
         #request.basic_auth("bruckwendu80@gmail.com", "Myseedr%5")
@@ -63,13 +64,44 @@ module Api
           use_ssl: uri.scheme == "https",
         }
         
+        puts ('Getting Torrent link')
         items_response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
           response = http.request(request)
-          if response.code != 200.to_s
-            render :json => @movie and return 
+          puts response.body.class
+          response.body = response.body && response.body.length >= 2 ? JSON.parse(response.body) : nil
+          if response.code != 200.to_s or not response.body
+            puts ('Error: got unexpected response code' + response.code )
+            uri = URI.parse("https://api.apidomain.info/movie?imdb=" + @movie[:imdb_id])
+            puts uri.to_s
+            request = Net::HTTP::Get.new(uri)
+            req_options = {
+              use_ssl: uri.scheme == "https",
+            }
+            
+            puts ('Getting Torrent link')
+            items_response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+              response = http.request(request)
+              puts response.body.class
+              response.body = response.body && response.body.length >= 2 ? JSON.parse(response.body) : nil
+              if response.code != 200.to_s or not response.body
+                puts ('Error: got unexpected response code' + response.code )
+                
+                render :json => @movie and return 
+              end
+              JSON.parse http.request(request).body
+            end
+            items_response['torrents'] = {}
+            items_response['torrents']['en'] = {}
+            items_response['torrents']['en']['1080p'] = ""
+            
+            
+            items_response['torrents']['en']['1080p'] = items_response['items'].find{|item| item['quality'] == "1080p" or item['quality'] == "720p"}['torrent_magnet']
+            items_response
+          else
+           response.body
           end
-          JSON.parse response.body
         end
+        puts ('Got' + items_response.to_s )
         
         downloaded_folder = nil 
         uri = URI.parse("https://www.seedr.cc/rest/folder")
@@ -84,11 +116,11 @@ module Api
           JSON.parse http.request(request).body
         end
         
-        puts folders_response
+        puts ('Current folders in seedr: ' +  folders_response.to_s)
         
         downloaded_folder = folders_response['folders'].detect{|f|
           puts ['items'][0]['file']
-          items_response['items'][0]['file'].include? f['name'] 
+          items_response['title'].include? f['name'] 
         }
         
         
@@ -98,7 +130,7 @@ module Api
           request = Net::HTTP::Post.new(uri)
           request.basic_auth("bruckwendu80@gmail.com", "Myseedr%5")
           request.set_form_data(
-            "magnet" => items_response['items'][0]['torrent_magnet'],
+            "magnet" => items_response['torrents']['en']['1080p'] || items_response['torrents']['en']['720p'],
           )
           
           req_options = {
@@ -123,6 +155,8 @@ module Api
               JSON.parse http.request(request).body
             end
             
+            puts ('Comparing with magnet response')
+            
             downloaded_folder = folders_response['folders'].detect{|f|
               puts f['name']
               puts magnet_response['title']
@@ -134,7 +168,9 @@ module Api
           end
         end
         
-        puts downloaded_folder
+        puts ('Using this folder for movie: ' + downloaded_folder.to_s)
+        
+        
           
         uri = URI.parse("https://www.seedr.cc/rest/folder/" + downloaded_folder['id'].to_s)
         request = Net::HTTP::Get.new(uri)
@@ -150,7 +186,9 @@ module Api
         
 
         
-        downloaded_file = files_response['files'].detect{|f| f['name'].include? items_response['items'][0]['file']}
+        downloaded_file = files_response['files'].detect{|f| f['stream_video'] }
+        
+        puts ('using this file: ' + files_response.to_s)
         
                 
         uri = URI.parse("https://www.seedr.cc/rest/file/" + downloaded_file['id'].to_s + '/hls')
