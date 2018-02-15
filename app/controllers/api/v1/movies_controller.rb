@@ -1,257 +1,77 @@
-require 'net/http'
-require 'uri'
 module Api
   module V1
     class MoviesController < ApplicationController
-      #before_action :authenticate_user!
-      before_action :set_movie, only: [:show, :watch]
+      before_action :set_Movie, only: [:show, :edit, :update, :destroy]
 
+      # GET /Movies
+      # GET /Movies.json
+      def index
+        @Movies = Movie.all
+      end
 
-
-      # GET /movies/1
-      # GET /movies/1.json
+      # GET /Movies/1
+      # GET /Movies/1.json
       def show
       end
 
-      # GET /movies/popular
-      # GET /movies/popular.json
-      def popular
-        @api_response = Tmdb::Movie.popular
-        @movies = []
-        @api_response.results.each do |movie|
-          @movies.push(movie.to_h)
-        end
+      # GET /Movies/new
+      def new
+        @Movie = Movie.new
       end
 
-      # GET /movies/search/:title
-      # GET /movies/search.json
-
-      def search
-        @api_response = Tmdb::Search.movie(params[:title]).to_h
-        @api_response[:results].each_with_index do |movie, index|
-          @api_response[:results][index] = movie.to_h
-        end
+      # GET /Movies/1/edit
+      def edit
       end
-      
-       # GET /movies/discover
-      # GET /movies/discover.json
 
-      def discover
-        @api_response = Tmdb::Discover.movie(params).to_h
-        @api_response[:results].each_with_index do |movie, index|
-          @api_response[:results][index] = movie.to_h
-        end
-      end
-      
-      # GET /movies/genres
-      # GET /movies/genres.json
+      # Movie /Movies
+      # Movie /Movies.json
+      def create
+        @Movie = Movie.new(Movie_params)
 
-      def genres
-        @api_response = Tmdb::Genre.movie_list
-        @api_response.each_with_index do |genre, index|
-          @api_response[index] = genre.to_h
-        end
-      end
-      
-      def watch
-        
-        uri = URI.parse("https://tv-v2.api-fetch.website/movie/" + @movie[:imdb_id])
-        puts uri.to_s
-        request = Net::HTTP::Get.new(uri)
-        #request.basic_auth("bruckwendu80@gmail.com", "Myseedr%5")
-        
-        req_options = {
-          use_ssl: uri.scheme == "https",
-        }
-        
-        puts ('Getting Torrent link')
-        items_response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-          response = http.request(request)
-          puts response.body.class
-          response.body = response.body && response.body.length >= 2 ? JSON.parse(response.body) : nil
-          if response.code != 200.to_s or not response.body
-            puts ('Error: got unexpected response code' + response.code )
-            uri = URI.parse("https://api.apidomain.info/movie?imdb=" + @movie[:imdb_id])
-            puts uri.to_s
-            request = Net::HTTP::Get.new(uri)
-            req_options = {
-              use_ssl: uri.scheme == "https",
-            }
-            
-            puts ('Getting Torrent link')
-            items_response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-              response = http.request(request)
-              puts response.body.class
-              response.body = response.body && response.body.length >= 2 ? JSON.parse(response.body) : nil
-              if response.code != 200.to_s or not response.body
-                puts ('Error: got unexpected response code' + response.code )
-                
-                render :json => @movie and return 
-              end
-              JSON.parse http.request(request).body
-            end
-            items_response['torrents'] = {}
-            items_response['torrents']['en'] = {}
-            items_response['torrents']['en']['1080p'] = ""
-            
-            
-            items_response['torrents']['en']['1080p'] = items_response['items'].find{|item| item['quality'] == "1080p" or item['quality'] == "720p"}['torrent_magnet']
-            items_response
+        respond_to do |format|
+          if @Movie.save
+            format.html { redirect_to @Movie, notice: 'Movie was successfully created.' }
+            format.json { render :show, status: :created, location: @Movie }
           else
-           response.body
+            format.html { render :new }
+            format.json { render json: @Movie.errors, status: :unprocessable_entity }
           end
         end
-        puts ('Got' + items_response.to_s )
-        
-        downloaded_folder = nil 
-        uri = URI.parse("https://www.seedr.cc/rest/folder")
-        request = Net::HTTP::Get.new(uri)
-        request.basic_auth("bruckwendu80@gmail.com", "Myseedr%5")
-        
-        req_options = {
-          use_ssl: uri.scheme == "https",
-        }
-        
-        folders_response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-          JSON.parse http.request(request).body
-        end
-        
-        puts ('Current folders in seedr: ' +  folders_response.to_s)
-        
-        downloaded_folder = folders_response['folders'].detect{|f|
-          puts ['items'][0]['file']
-          items_response['title'].include? f['name'] 
-        }
-        
-        
-        
-        if not downloaded_folder
-          uri = URI.parse("https://www.seedr.cc/rest/torrent/magnet")
-          request = Net::HTTP::Post.new(uri)
-          request.basic_auth("bruckwendu80@gmail.com", "Myseedr%5")
-          request.set_form_data(
-            "magnet" => items_response['torrents']['en']['1080p'] || items_response['torrents']['en']['720p'],
-          )
-          
-          req_options = {
-            use_ssl: uri.scheme == "https",
-          }
-          
-          magnet_response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-           JSON.parse http.request(request).body
-          end
-          
-          index = 0
-          while not downloaded_folder and index < 5 do
-            uri = URI.parse("https://www.seedr.cc/rest/folder")
-            request = Net::HTTP::Get.new(uri)
-            request.basic_auth("bruckwendu80@gmail.com", "Myseedr%5")
-            
-            req_options = {
-              use_ssl: uri.scheme == "https",
-            }
-            
-            folders_response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-              JSON.parse http.request(request).body
-            end
-            
-            puts ('Comparing with magnet response')
-            
-            downloaded_folder = folders_response['folders'].detect{|f|
-              puts f['name']
-              puts magnet_response['title']
-              f['name'].include? magnet_response['title']
-            }
-            
-            sleep 3
-            index = index + 1
-          end
-        end
-        
-        puts ('Using this folder for movie: ' + downloaded_folder.to_s)
-        
-        
-          
-        uri = URI.parse("https://www.seedr.cc/rest/folder/" + downloaded_folder['id'].to_s)
-        request = Net::HTTP::Get.new(uri)
-        request.basic_auth("bruckwendu80@gmail.com", "Myseedr%5")
-        
-        req_options = {
-          use_ssl: uri.scheme == "https",
-        }
-        
-        files_response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-         JSON.parse http.request(request).body
-        end
-        
-
-        
-        downloaded_file = files_response['files'].detect{|f| f['stream_video'] }
-        
-        puts ('using this file: ' + files_response.to_s)
-        
-                
-        uri = URI.parse("https://www.seedr.cc/rest/file/" + downloaded_file['id'].to_s + '/hls')
-        request = Net::HTTP::Get.new(uri)
-        request.basic_auth("bruckwendu80@gmail.com", "Myseedr%5")
-        
-        req_options = {
-          use_ssl: uri.scheme == "https",
-        }
-        
-        hls_response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-          http.request(request)
-        end
-          
-         @movie[:hls] = hls_response['location']
-        
       end
 
+      # PATCH/PUT /Movies/1
+      # PATCH/PUT /Movies/1.json
+      def update
+        respond_to do |format|
+          if @Movie.update(Movie_params)
+            format.html { redirect_to @Movie, notice: 'Movie was successfully updated.' }
+            format.json { render :show, status: :ok, location: @Movie }
+          else
+            format.html { render :edit }
+            format.json { render json: @Movie.errors, status: :unprocessable_entity }
+          end
+        end
+      end
 
+      # DELETE /Movies/1
+      # DELETE /Movies/1.json
+      def destroy
+        @Movie.destroy
+        respond_to do |format|
+          format.html { redirect_to Movies_url, notice: 'Movie was successfully destroyed.' }
+          format.json { head :no_content }
+        end
+      end
 
       private
-        # Use callbacks to share common setup or constraints between actions.
-      def set_movie
-        begin
-          @movie = Tmdb::Movie.detail(params[:id].to_i).to_h
-          get_more_info params[:id].to_i
-          toHash = [:genres, :production_companies, :production_countries, :spoken_languages, :cast, :crew, :director, :videos]
-          toHash.each do |prop|
-            convert_to_hash prop
-          end
-        rescue Tmdb::Error => e
-          @movie = []
-        end
-      end
-
-      def get_more_info id
-        begin
-          crew =  Tmdb::Movie.crew(id)
-          @movie[:crew] = crew
-
-          cast =  Tmdb::Movie.cast(id)
-          @movie[:cast] = cast
-
-          director =  Tmdb::Movie.director(id)
-          @movie[:director] = director
-
-          videos =  Tmdb::Movie.videos(id)
-          @movie[:videos] = videos
-
-        rescue Tmdb::Error => e
-          puts e
-        end
+      # Use callbacks to share common setup or constraints between actions.
+      def set_Movie
+        @Movie = Movie.find(params[:id])
       end
 
       # Never trust parameters from the scary internet, only allow the white list through.
-      def movie_params
-        params.fetch(:movie, {})
-      end
-
-      def convert_to_hash prop
-        @movie[prop].each_with_index do |item, index|
-          @movie[prop][index] = item.to_h
-        end
+      def Movie_params
+        params.require(:Movie).permit(:name, :title, :content)
       end
     end
   end
