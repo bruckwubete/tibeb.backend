@@ -6,35 +6,40 @@ module Api
       # GET /Movies
       # GET /Movies.json
       def index
-        @Movies = Movie.all
+        @movies = Movie.all
       end
 
       # GET /Movies/1
       # GET /Movies/1.json
-      def show
-      end
+      def show; end
 
       # GET /Movies/new
       def new
-        @Movie = Movie.new
+        @movie = Movie.new
+        respond_to do |format|
+          if @movie
+            format.json { render :show, status: :created }
+          else
+            format.json do
+              render json: @movie.errors, status: :unprocessable_entity
+            end
+          end
+        end
       end
 
       # GET /Movies/1/edit
-      def edit
-      end
+      def edit; end
 
       # Movie /Movies
       # Movie /Movies.json
       def create
-        @Movie = Movie.new(Movie_params)
+        @movie = Movie.new(movie_params)
 
         respond_to do |format|
-          if @Movie.save
-            format.html { redirect_to @Movie, notice: 'Movie was successfully created.' }
-            format.json { render :show, status: :created, location: @Movie }
+          if @movie.save
+            format.json { render :show, status: :created}
           else
-            format.html { render :new }
-            format.json { render json: @Movie.errors, status: :unprocessable_entity }
+            format.json { render json: @movie.errors, status: :unprocessable_entity }
           end
         end
       end
@@ -43,12 +48,12 @@ module Api
       # PATCH/PUT /Movies/1.json
       def update
         respond_to do |format|
-          if @Movie.update(Movie_params)
-            format.html { redirect_to @Movie, notice: 'Movie was successfully updated.' }
-            format.json { render :show, status: :ok, location: @Movie }
+          if @movie.update(Movie_params)
+            format.html { redirect_to @movie, notice: 'Movie was successfully updated.' }
+            format.json { render :show, status: :ok, location: @movie }
           else
             format.html { render :edit }
-            format.json { render json: @Movie.errors, status: :unprocessable_entity }
+            format.json { render json: @movie.errors, status: :unprocessable_entity }
           end
         end
       end
@@ -56,9 +61,9 @@ module Api
       # DELETE /Movies/1
       # DELETE /Movies/1.json
       def destroy
-        @Movie.destroy
+        @movie.destroy
         respond_to do |format|
-          format.html { redirect_to Movies_url, notice: 'Movie was successfully destroyed.' }
+          format.html { redirect_to @movie, notice: 'Movie was successfully destroyed.' }
           format.json { head :no_content }
         end
       end
@@ -66,12 +71,14 @@ module Api
       private
       # Use callbacks to share common setup or constraints between actions.
       def set_Movie
-        @Movie = Movie.find(params[:id])
+        @movie = Movie.find(params[:id])
       end
 
-      # Never trust parameters from the scary internet, only allow the white list through.
-      def Movie_params
-        params.require(:Movie).permit(:name, :title, :content)
+      # Never trust parameters from the scary internet.
+      # Only allow the white list through.
+      # @return [Object]
+      def movie_params
+        params.permit(:title)
       end
     end
   end
