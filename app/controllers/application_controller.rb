@@ -20,12 +20,10 @@ class ApplicationController < ActionController::Base
   
   def error_occurred(exception)
     render json: {error: exception.message}.to_json, status: 500
-    return
   end
   
   
   def handle_validation_error(exception)
     render template: 'api/v1/errors/email_already_inuse'
-    return
   end
 end

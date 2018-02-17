@@ -1,7 +1,7 @@
 module Api
   module V1
     class MoviesController < ApplicationController
-      before_action :set_Movie, only: [:show, :edit, :update, :destroy]
+      before_action :set_movie, only: %i[show edit update destroy]
 
       # GET /Movies
       # GET /Movies.json
@@ -37,9 +37,11 @@ module Api
 
         respond_to do |format|
           if @movie.save
-            format.json { render :show, status: :created}
+            format.json { render :show, status: :created }
           else
-            format.json { render json: @movie.errors, status: :unprocessable_entity }
+            format.json do
+              render json: @movie.errors, status: :unprocessable_entity
+            end
           end
         end
       end
@@ -48,12 +50,12 @@ module Api
       # PATCH/PUT /Movies/1.json
       def update
         respond_to do |format|
-          if @movie.update(Movie_params)
-            format.html { redirect_to @movie, notice: 'Movie was successfully updated.' }
+          if @movie.update(movie_params)
             format.json { render :show, status: :ok, location: @movie }
           else
-            format.html { render :edit }
-            format.json { render json: @movie.errors, status: :unprocessable_entity }
+            format.json do
+              render json: @movie.errors, status: :unprocessable_entity
+            end
           end
         end
       end
@@ -63,14 +65,14 @@ module Api
       def destroy
         @movie.destroy
         respond_to do |format|
-          format.html { redirect_to @movie, notice: 'Movie was successfully destroyed.' }
           format.json { head :no_content }
         end
       end
 
       private
+
       # Use callbacks to share common setup or constraints between actions.
-      def set_Movie
+      def set_movie
         @movie = Movie.find(params[:id])
       end
 
@@ -78,7 +80,7 @@ module Api
       # Only allow the white list through.
       # @return [Object]
       def movie_params
-        params.permit(:title)
+        params.permit(:title, :picture)
       end
     end
   end
