@@ -1,12 +1,29 @@
 module Api
   module V1
     class MoviesController < ApplicationController
+      before_action :authenticate_user!
       before_action :set_movie, only: %i[show edit update destroy]
+
+      swagger_controller :movies, 'Movies'
+
+      swagger_api :index do
+        summary 'Returns all movies'
+        notes "This lists all the active users"
+        param :query, 'page[number]', :integer, :optional, "Page number"
+        param :query, 'page[size]', :integer, :optional, "Page size"
+        response :unauthorized
+        response :not_acceptable
+        response :requested_range_not_satisfiable
+      end
 
       # GET /Movies
       # GET /Movies.json
       def index
-        @movies = Movie.all
+        page_number = params[:page] ? params[:page][:number] : 1
+        page_size = params[:page]? params[:page][:size] : Rails.application.config.default_per_page
+        @movies = Movie.all.page(page_number).per(page_size)
+        puts "HEREEEEE"
+        puts @movies.length
       end
 
       # GET /Movies/1
@@ -33,10 +50,14 @@ module Api
       # Movie /Movies
       # Movie /Movies.json
       def create
-        @movie = Movie.new(movie_params)
+        parameters = movie_params.dup
+        parameters.delete(:posters)
+
+        @movie = Movie.new(parameters)
 
         respond_to do |format|
           if @movie.save
+            @movie.save_attachments(movie_params) if params[:posters]
             format.json { render :show, status: :created }
           else
             format.json do
@@ -80,7 +101,13 @@ module Api
       # Only allow the white list through.
       # @return [Object]
       def movie_params
-        params.permit(:title, :picture)
+        valid_params = Movie.attribute_names.reject do |item|
+          item.match(/^_id/)
+        end
+        params.require(:title)
+        valid_params.concat([posters: [], videos: []])
+        valid_params.concat([:page])
+        params.permit(valid_params)
       end
     end
   end

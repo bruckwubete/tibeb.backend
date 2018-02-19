@@ -1,0 +1,53 @@
+{
+  "apiVersion": "v1",
+  "swaggerVersion": "1.2",
+  "basePath": "http://localhost:3000",
+  "resourcePath": "movies",
+  "apis": [
+    {
+      "path": "/api/v1/movies",
+      "operations": [
+        {
+          "summary": "Returns all movies",
+          "notes": "This lists all the active users",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "page[number]",
+              "type": "integer",
+              "description": "Page number",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "page[size]",
+              "type": "integer",
+              "description": "Page size",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 406,
+              "responseModel": null,
+              "message": "Not Acceptable"
+            },
+            {
+              "code": 500,
+              "responseModel": null,
+              "message": "Requested Range Not Satisfiable"
+            }
+          ],
+          "nickname": "Api::V1::Movies#index",
+          "method": "get"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

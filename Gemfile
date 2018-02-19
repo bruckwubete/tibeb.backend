@@ -44,7 +44,7 @@ gem 'sprockets-rails'
 gem 'arcrud'
 
 # Mailing
-gem 'mailgun_rails'
+#gem 'mailgun_rails'
 
 # Authentication
 gem 'devise'
@@ -56,6 +56,12 @@ gem 'omniauth-google-oauth2'
 
 # Paperclip for file upload
 gem "mongoid-paperclip"
+
+# Pagination
+gem 'kaminari-mongoid'
+
+# Documentation
+gem 'swagger-docs'
 
 
 group :development, :test do

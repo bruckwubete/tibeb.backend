@@ -5,7 +5,7 @@ class User
 
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :omniauthable,
-         :recoverable, :rememberable, :trackable, :confirmable
+         :recoverable, :rememberable, :trackable
 
   include DeviseTokenAuth::Concerns::User
   
