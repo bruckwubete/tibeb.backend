@@ -8,9 +8,9 @@ module Api
 
       swagger_api :index do
         summary 'Returns all movies'
-        notes "This lists all the active users"
-        param :query, 'page[number]', :integer, :optional, "Page number"
-        param :query, 'page[size]', :integer, :optional, "Page size"
+        notes 'This lists all movies'
+        param :query, 'page[number]', :integer, :optional, 'Page number'
+        param :query, 'page[size]', :integer, :optional, 'Page size'
         response :unauthorized
         response :not_acceptable
         response :requested_range_not_satisfiable
@@ -22,8 +22,6 @@ module Api
         page_number = params[:page] ? params[:page][:number] : 1
         page_size = params[:page]? params[:page][:size] : Rails.application.config.default_per_page
         @movies = Movie.all.page(page_number).per(page_size)
-        puts "HEREEEEE"
-        puts @movies.length
       end
 
       # GET /Movies/1

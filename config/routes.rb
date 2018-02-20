@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  namespace :api, defaults: {format: :json} do
+  namespace :api, defaults: { format: :json } do
     namespace :v1 do
       # movies routes
       resources :movies
@@ -10,6 +10,9 @@ Rails.application.routes.draw do
     end
   end
 
-  mount_devise_token_auth_for 'User', at: '/api/v1/auth'
+  mount_devise_token_auth_for 'User', at: '/api/v1/auth', controllers: {
+    registrations:  'overrides/registrations'
+  }
+
   get '/apidocs' => redirect('/swagger-ui/')
 end

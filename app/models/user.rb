@@ -8,11 +8,16 @@ class User
          :recoverable, :rememberable, :trackable
 
   include DeviseTokenAuth::Concerns::User
+  include Mongoid::Paperclip
+
+  has_mongoid_attached_file :profile_pic, default_url: '/images/:style/missing.png'
+  validates_attachment_content_type :profile_pic, content_type: %w[image/jpg image/jpeg image/png image/gif]
   
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
 
   field :email, type: String
+  field :name, type: String
   field :encrypted_password, type: String, default: ''
 
   ## Recoverable
@@ -38,7 +43,6 @@ class User
   ## User Info
   field :name, type: String
   field :nickname, type: String
-  field :image, type: String
 
   ## unique oauth id
   field :provider, type: String

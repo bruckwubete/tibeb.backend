@@ -9,7 +9,7 @@
       "operations": [
         {
           "summary": "Returns all movies",
-          "notes": "This lists all the active users",
+          "notes": "This lists all movies",
           "parameters": [
             {
               "paramType": "query",
