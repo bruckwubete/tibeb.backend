@@ -1,4 +1,5 @@
 class Genre
   include Mongoid::Document
-  has_many :movies
+  embedded_in :movie
+  field :type, type: String, default: 0
 end

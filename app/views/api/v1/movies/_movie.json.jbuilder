@@ -1,8 +1,8 @@
-json.except! movie, :picture, :video
-json.posters movie.posters do |picture|
-  json.extract! picture, :picture_file_name, :picture_content_type,
-                :picture_file_size, :picture_updated_at
-  json.picture_path picture.picture
+json.except! movie, :image, :video
+json.posters movie.images do |pic|
+  json.extract! pic, :pic_file_name, :pic_content_type,
+                :pic_file_size, :pic_updated_at
+  json.pic_path pic.pic
 end
 
 json.videos movie.videos do |video|

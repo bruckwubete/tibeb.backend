@@ -1,7 +1,7 @@
 module Api
   module V1
     class MoviesController < ApplicationController
-      before_action :authenticate_user!
+      #before_action :authenticate_user!
       before_action :set_movie, only: %i[show edit update destroy]
 
       swagger_controller :movies, 'Movies'
@@ -50,12 +50,14 @@ module Api
       def create
         parameters = movie_params.dup
         parameters.delete(:posters)
+        parameters.delete(:genres)
+        parameters.delete(:videos)
 
         @movie = Movie.new(parameters)
 
         respond_to do |format|
           if @movie.save
-            @movie.save_attachments(movie_params) if params[:posters]
+            @movie.save_attachments(movie_params)
             format.json { render :show, status: :created }
           else
             format.json do
@@ -103,7 +105,7 @@ module Api
           item.match(/^_id/)
         end
         params.require(:title)
-        valid_params.concat([posters: [], videos: []])
+        valid_params.concat([posters: [], videos: [], genres: []])
         valid_params.concat([:page])
         params.permit(valid_params)
       end

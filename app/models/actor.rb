@@ -1,3 +1,4 @@
-class Actor < Person
+class Actor
+  include Person
   include Mongoid::Document
 end

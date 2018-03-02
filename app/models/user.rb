@@ -1,5 +1,8 @@
-class User < Person
+class User
+  include Person
+  include Mongoid::Document
   include Mongoid::Timestamps::Short
+  #store_in collection: "users"
 
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :omniauthable,
@@ -40,13 +43,13 @@ class User < Person
 
   ## unique oauth id
   field :provider, type: String
-  field :uid, default: ""
+  field :uid, default: ''
 
   ## Tokens
   field :tokens, type: Hash, default: { }
 
   ## Index
-  index({email: 1, uid: 1, reset_password_token: 1}, {unique: true})
+  index({email: 1, uid: 1, reset_password_token: 1}, unique: true)
 
   ## Validation
   validates_uniqueness_of :email, :uid
