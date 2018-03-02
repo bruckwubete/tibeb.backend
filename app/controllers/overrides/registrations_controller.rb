@@ -6,7 +6,9 @@ module Overrides
     end
 
     def create
-      @resource            = resource_class.new(sign_up_params)
+      parameters = sign_up_params.dup
+      parameters.delete(:profile_pic)
+      @resource = resource_class.new(parameters)
       @resource.uid        = sign_up_params[:email]
       @resource.provider   = 'email'
 
@@ -23,6 +25,8 @@ module Overrides
         # override email confirmation, must be sent manually from ctrl
         @resource.class.skip_callback('create', :after, :send_on_create_confirmation_instructions)
         if @resource.save
+
+          @resource.save_profile_pics(sign_up_params)
 
           if @resource.confirmed?
             # email auth has been bypassed, authenticate user

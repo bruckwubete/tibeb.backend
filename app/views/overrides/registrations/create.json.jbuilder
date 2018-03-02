@@ -1,10 +1,10 @@
 json.status 'success'
 json.data do
-  json.except! @resource, :profile_pic_file_name, :profile_pic_content_type,
-               :profile_pic_file_size, :profile_pic_updated_at, :profile_pic_fingerprint, :tokens, :encrypted_password
-  json.profile_pic do
-    json.extract! @resource, :profile_pic_file_name, :profile_pic_content_type,
-                :profile_pic_file_size, :profile_pic_updated_at, :profile_pic_fingerprint
-    json.profile_pic_path @resource.profile_pic
+  json.except! @resource, :tokens, :encrypted_password
+
+  json.images @resource.images do |image|
+    json.extract! image, :pic_file_name, :pic_content_type,
+                  :pic_file_size, :pic_updated_at, :pic_fingerprint
+    json.path image.pic
   end
 end

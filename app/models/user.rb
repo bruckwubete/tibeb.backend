@@ -1,6 +1,4 @@
-class User
-
-  include Mongoid::Document
+class User < Person
   include Mongoid::Timestamps::Short
 
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -8,10 +6,6 @@ class User
          :recoverable, :rememberable, :trackable
 
   include DeviseTokenAuth::Concerns::User
-  include Mongoid::Paperclip
-
-  has_mongoid_attached_file :profile_pic, default_url: '/images/:style/missing.png'
-  validates_attachment_content_type :profile_pic, content_type: %w[image/jpg image/jpeg image/png image/gif]
   
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -56,6 +50,9 @@ class User
 
   ## Validation
   validates_uniqueness_of :email, :uid
-  
-  
+
+
+  def save_profile_pics(params)
+    images.create(pic: params[:profile_pic])
+  end
 end
