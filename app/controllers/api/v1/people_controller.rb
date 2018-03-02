@@ -1,7 +1,7 @@
 module Api
   module V1
     class PeopleController < ApplicationController
-      before_action :set_People, only: [:show, :edit, :update, :destroy]
+      before_action :set_People, only: %i[show edit update destroy]
 
       # GET /People
       # GET /People.json
@@ -11,8 +11,7 @@ module Api
 
       # GET /People/1
       # GET /People/1.json
-      def show
-      end
+      def show; end
 
       # GET /People/new
       def new
@@ -20,8 +19,7 @@ module Api
       end
 
       # GET /People/1/edit
-      def edit
-      end
+      def edit; end
 
       # People /People
       # People /People.json
