@@ -21,7 +21,7 @@ module Api
       def index
         page_number = params[:page] ? params[:page][:number] : 1
         page_size = params[:page]? params[:page][:size] : Rails.application.config.default_per_page
-        @movies = Movie.all.page(page_number).per(page_size)
+        @movies = Movie.includes(:actors).all.page(page_number).per(page_size)
       end
 
       # GET /Movies/1
@@ -52,12 +52,17 @@ module Api
         parameters.delete(:posters)
         parameters.delete(:genres)
         parameters.delete(:videos)
+        parameters.delete(:actors)
 
         @movie = Movie.new(parameters)
 
         respond_to do |format|
           if @movie.save
-            @movie.save_attachments(movie_params)
+            # begin
+              @movie.save_attachments(movie_params)
+            # rescue ArgumentError => e
+            #   return render json: { errors: e.message }, status: :bad_request
+            # end
             format.json { render :show, status: :created }
           else
             format.json do
@@ -94,7 +99,7 @@ module Api
 
       # Use callbacks to share common setup or constraints between actions.
       def set_movie
-        @movie = Movie.find(params[:id])
+        @movie = Movie.includes(:genres).find(params[:id])
       end
 
       # Never trust parameters from the scary internet.
@@ -105,8 +110,8 @@ module Api
           item.match(/^_id/)
         end
         params.require(:title)
-        valid_params.concat([posters: [], videos: [], genres: []])
         valid_params.concat([:page])
+        valid_params.concat([posters: [], videos: [], genres: [], actors: [Actor.attribute_names]])
         params.permit(valid_params)
       end
     end

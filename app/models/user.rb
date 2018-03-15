@@ -12,9 +12,6 @@ class User
   
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-
-  field :email, type: String
-  field :name, type: String
   field :encrypted_password, type: String, default: ''
 
   ## Recoverable
@@ -37,9 +34,6 @@ class User
   field :confirmation_sent_at, type: Time
   field :unconfirmed_email, type: String
 
-  ## User Info
-  field :name, type: String
-  field :nickname, type: String
 
   ## unique oauth id
   field :provider, type: String

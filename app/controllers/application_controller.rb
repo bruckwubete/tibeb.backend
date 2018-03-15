@@ -1,11 +1,12 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
   include DeviseTokenAuth::Concerns::SetUserByToken
+  include Error::ErrorHandler
   wrap_parameters false
 
   # rescue errors
-  rescue_from ::ActionController::RoutingError, with: :error_occurred
-  rescue_from Mongoid::Errors::Validations, with: :handle_validation_error
+  # rescue_from ::ActionController::RoutingError, with: :error_occurred
+  #rescue_from Mongoid::Errors::Validations, with: :handle_validation_error
 
   protected
 
