@@ -10,7 +10,7 @@ class Movie
 
   has_many :images
   has_many :videos
-  embeds_many :genres
+  has_and_belongs_to_many :genres
   has_and_belongs_to_many :actors
   has_and_belongs_to_many :directors
   has_and_belongs_to_many :crews
@@ -30,7 +30,7 @@ class Movie
   def save_attachments(params)
     params[:posters].each { |pic| images.create(pic: pic) } if params[:posters]
     params[:videos].each { |vid| videos.create(video: vid) } if params[:videos]
-    params[:genres].each { |genre| genres.create(type: genre) } if params[:genres]
+    params[:genres].each { |genre| genres.push(Genre.find_by(type: genre)) } if params[:genres]
     if params[:actors]
       created_actors = []
       params[:actors].each do |actor|

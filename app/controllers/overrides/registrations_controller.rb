@@ -2,7 +2,7 @@ module Overrides
   class RegistrationsController < DeviseTokenAuth::RegistrationsController
 
     def sign_up_params
-      params.permit(%i[email password name password_confirmation profile_pic])
+      params.permit(%i[email password password_confirmation name first_name last_name password_confirmation profile_pic])
     end
 
     def create
