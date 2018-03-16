@@ -57,12 +57,8 @@ module Api
         @movie = Movie.new(parameters)
 
         respond_to do |format|
+          @movie.save_attachments(movie_params)
           if @movie.save
-            # begin
-              @movie.save_attachments(movie_params)
-            # rescue ArgumentError => e
-            #   return render json: { errors: e.message }, status: :bad_request
-            # end
             format.json { render :show, status: :created }
           else
             format.json do

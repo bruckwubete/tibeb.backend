@@ -45,9 +45,9 @@ class User
   ## Index
   index({email: 1, uid: 1, reset_password_token: 1}, unique: true)
 
-  ## Validation
-  validates_uniqueness_of :email, :uid
-
+  ## Validations
+  validates :email, presence: true, uniqueness: true
+  validates :uid, uniqueness: true
 
   def save_profile_pics(params)
     images.create(pic: params[:profile_pic])

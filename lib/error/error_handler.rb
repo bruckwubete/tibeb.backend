@@ -3,10 +3,10 @@ module Error
     def self.included(clazz)
       clazz.class_eval do
         rescue_from StandardError do |e|
-          respond(:standard_error, 500, e.to_s)
+          respond(:internal_server_error, 500, e.to_s)
         end
         rescue_from Mongoid::Errors::DocumentNotFound do |e|
-          respond(:record_not_found, 404, e.to_s)
+          respond(:record_not_found, 404, e.as_json['problem'])
         end
         rescue_from CustomError do |e|
           respond(e.error, e.status, e.message.to_s)
