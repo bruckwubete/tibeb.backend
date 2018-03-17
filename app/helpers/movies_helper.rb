@@ -17,7 +17,9 @@ module MoviesHelper
               _message = "Failed to Find Actor with id #{actor_id}"
       end
 
-      @actor = Actor.new(actor)
+      parameters = actor.dup
+      parameters.delete(:phone_numbers)
+      @actor = Actor.new(parameters)
       @actor.validate
       unless @actor.errors.messages.empty?
         @actor.errors.messages.each do |key, er|
@@ -27,6 +29,9 @@ module MoviesHelper
         end
       end
       @actor.movies.push(movie)
+      @actor.save
+      @actor.save_phone_number(actor[:phone_numbers][0]) if actor[:phone_numbers] && actor[:phone_numbers][0]
+      @actor.save_image()
       @actor.save
       created_actors.push(@actor)
       movie.actors.push(@actor)

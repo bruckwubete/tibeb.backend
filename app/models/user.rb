@@ -50,6 +50,6 @@ class User
   validates :uid, uniqueness: true
 
   def save_profile_pics(params)
-    images.create(pic: params[:profile_pic])
+    images.create(pic: params[:profile_pic], model: 'user')
   end
 end

@@ -1,2 +1,0 @@
-class Poster < Image
-end

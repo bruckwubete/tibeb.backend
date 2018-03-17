@@ -107,7 +107,9 @@ module Api
         end
         params.require(:title)
         valid_params.concat([:page])
-        valid_params.concat([posters: [], videos: [], genres: [], actors: [Actor.attribute_names]])
+        actor_params = Actor.attribute_names
+        actor_params.concat([phone_numbers: [[:phone_number, :type]]])
+        valid_params.concat([posters: [], videos: [], genres: [], actors: [actor_params]])
         params.permit(valid_params)
       end
     end
