@@ -42,6 +42,10 @@ class User
   ## Tokens
   field :tokens, type: Hash, default: { }
 
+  ## Custom additional fields
+  field :terms, type: Boolean, default: false
+  field :confirm_success_url, type: String
+
   ## Index
   index({email: 1, uid: 1, reset_password_token: 1}, unique: true)
 
@@ -50,6 +54,6 @@ class User
   validates :uid, uniqueness: true
 
   def save_profile_pics(params)
-    images.create(pic: params[:profile_pic], model: 'user')
+    params[:profile_pic].each { |pic| images.create(pic: pic[1], model: 'user') }
   end
 end

@@ -1,8 +1,11 @@
 module Overrides
   class RegistrationsController < DeviseTokenAuth::RegistrationsController
-
     def sign_up_params
-      params.permit(%i[email password password_confirmation name first_name last_name password_confirmation profile_pic])
+      params.permit(:email, :password, :password_confirmation, :name, :first_name,
+                    :last_name, :password_confirmation, :terms,
+                    :confirm_success_url, profile_pic:{}).tap do |whitelisted|
+         whitelisted[:profile_pic] = params[:profile_pic]
+       end
     end
 
     def create
@@ -15,16 +18,16 @@ module Overrides
       # success redirect url is required
       unless params[:confirm_success_url]
         return render json: {
-            status: 'error',
-            data:   @resource,
-            errors: ['Missing `confirm_success_url` param.']
+          status: 'error',
+          data:   @resource,
+          errors: ['Missing `confirm_success_url` param.']
         }, status: 403
       end
 
       begin
         # override email confirmation, must be sent manually from ctrl
         @resource.class.skip_callback('create', :after, :send_on_create_confirmation_instructions)
-        if @resource.save
+        if @resource.save!
 
           @resource.save_profile_pics(sign_up_params)
 
@@ -34,33 +37,33 @@ module Overrides
             @token     = SecureRandom.urlsafe_base64(nil, false)
 
             @resource.tokens[@client_id] = {
-                token: BCrypt::Password.create(@token),
-                expiry: (Time.now + DeviseTokenAuth.token_lifespan).to_i
+              token: BCrypt::Password.create(@token),
+              expiry: (Time.now + DeviseTokenAuth.token_lifespan).to_i
             }
 
-            @resource.save!
+            #@resource.save!
 
             update_auth_header
           else
             # user will require email authentication
             @resource.send_confirmation_instructions(client_config: params[:config_name],
-                                                         redirect_url: params[:confirm_success_url])
+                                                     redirect_url: params[:confirm_success_url])
 
           end
         else
           clean_up_passwords @resource
           render json: {
-              status: 'error',
-              data:   @resource,
-              errors: @resource.errors.to_hash.merge(full_messages: @resource.errors.full_messages)
+            status: 'error',
+            data:   @resource,
+            errors: @resource.errors.to_hash.merge(full_messages: @resource.errors.full_messages)
           }, status: 403
         end
       rescue Mongoid::Errors::MongoidError
         clean_up_passwords @resource
         render json: {
-            status: 'error',
-            data:   @resource,
-            errors: ["An account already exists for #{@resource.email}"]
+          status: 'error',
+          data:   @resource,
+          errors: ["An account already exists for #{@resource.email}"]
         }, status: 403
       end
     end
