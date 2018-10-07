@@ -6,7 +6,7 @@ module Api
       # GET /People
       # GET /People.json
       def index
-        @People = People.all
+        @people = Person.page(1).per(5)
       end
 
       # GET /People/1

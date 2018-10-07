@@ -5,8 +5,9 @@ Rails.application.routes.draw do
       resources :movies
       # shows routes
       resources :shows
-      # people routes
-      resources :people
+      # actor routes
+      resources :actors
+      
     end
   end
 

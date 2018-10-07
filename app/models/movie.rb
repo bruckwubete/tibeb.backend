@@ -28,7 +28,7 @@ class Movie
   field :vote_count, type: Integer, default: 0
 
   def save_attachments(params)
-    params[:posters].each { |pic| images.create(pic: pic, model: 'poster') } if params[:posters]
+    params[:posters].each { |pic| images.create(pic: pic, model: 'movi') } if params[:posters]
     params[:videos].each { |vid| videos.create(video: vid) } if params[:videos]
     Helpers.find_genres(self, params)
     Helpers.create_or_find_actors(self, params)

@@ -31,7 +31,7 @@ module MoviesHelper
       @actor.movies.push(movie)
       @actor.save
       @actor.save_phone_number(actor[:phone_numbers][0]) if actor[:phone_numbers] && actor[:phone_numbers][0]
-      @actor.save_image()
+      #@actor.save_image()
       @actor.save
       created_actors.push(@actor)
       movie.actors.push(@actor)

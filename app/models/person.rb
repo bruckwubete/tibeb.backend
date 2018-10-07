@@ -17,6 +17,9 @@ module Person
     field :last_name, type: String
     field :nick_name, type: String
     field :bio, type: String
+    field :dob, type: Date
+    field :deceased, type: Time, default: false
+    field :dod, type: Date
 
 
     ## Validations

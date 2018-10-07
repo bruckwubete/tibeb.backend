@@ -1,1 +1,1 @@
-json.data {json.partial! 'api/v1//movies/movie', movie: @movie}
+json.data {json.partial! 'api/v1/movies/movie', movie: @movie}
