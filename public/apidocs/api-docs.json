@@ -1,11 +1,19 @@
 {
   "apiVersion": "v1",
   "swaggerVersion": "1.2",
-  "basePath": "http://localhost:3000",
+  "basePath": "http://tibeb-back-bruck.c9users.io",
   "apis": [
     {
       "path": "/apidocs/api/v1/movies.{format}",
       "description": "Movies"
+    },
+    {
+      "path": "/apidocs/api/v1/actors.{format}",
+      "description": "Actors"
+    },
+    {
+      "path": "/apidocs/api/v1/crews.{format}",
+      "description": "Crews"
     }
   ],
   "authorizations": null

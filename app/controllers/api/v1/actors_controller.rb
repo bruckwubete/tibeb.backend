@@ -2,6 +2,18 @@ module Api
   module V1
     class ActorsController < ApplicationController
       before_action :set_actor, only: %i[show edit update destroy]
+      
+      swagger_controller :actors, 'Actors'
+
+      swagger_api :index do
+        summary 'Returns all actors'
+        notes 'This lists all actors'
+        param :query, 'page[number]', :integer, :optional, 'Page number'
+        param :query, 'page[size]', :integer, :optional, 'Page size'
+        response :unauthorized
+        response :not_acceptable
+        response :requested_range_not_satisfiable
+      end
 
       # GET /actors
       # GET /actors.json
@@ -37,6 +49,7 @@ module Api
       def create
         parameters = actor_params.dup
         parameters.delete(:pictures)
+        parameters.delete(:videos)
         @actor = Actor.new(parameters)
 
         respond_to do |format|

@@ -1,0 +1,1 @@
+json.data {json.partial! 'api/v1/crews/crew', crew: @crew}

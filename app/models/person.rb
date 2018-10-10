@@ -4,10 +4,12 @@ module Person
     include Mongoid::Document
     include Mongoid::Phony
     attr_accessor :images
+    attr_accessor :videos
     attr_accessor :addresses
     attr_accessor :phonenumbers
 
     embeds_many :images
+    embeds_many :videos
     embeds_many :phonenumbers
     has_many :addresses
 

@@ -9,6 +9,6 @@ end
 Swagger::Docs::Config.register_apis(  'v1' => {
     controller_base_path: '',
     api_file_path: 'public/apidocs',
-    base_path: 'http://localhost:3000',
+    base_path: 'http://tibeb-back-bruck.c9users.io/',
     clean_directory: true
   })

@@ -7,7 +7,8 @@ Rails.application.routes.draw do
       resources :shows
       # actor routes
       resources :actors
-      
+      # crew routes 
+      resources :crews
     end
   end
 
