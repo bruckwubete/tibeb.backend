@@ -1,7 +1,6 @@
 class Actor
   include Person
   include Mongoid::Document
-  after_create :save_image
   paginates_per 5
   has_and_belongs_to_many :movies
  

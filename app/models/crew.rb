@@ -29,7 +29,7 @@ class Crew
       save_image
     end
     if params[:videos]
-      params[:videos].each { |vid| videos.create(video: vid) }
+      params[:videos].each { |vid| videos.create(video: vid,  model: 'crew') }
     else
       save_videos
     end

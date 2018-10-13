@@ -57,8 +57,8 @@ module Api
         @movie = Movie.new(parameters)
 
         respond_to do |format|
-          @movie.save_attachments(movie_params)
           if @movie.save
+            @movie.save_attachments(movie_params)
             format.json { render :show, status: :created }
           else
             format.json do
