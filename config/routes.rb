@@ -9,6 +9,8 @@ Rails.application.routes.draw do
       resources :actors
       # crew routes 
       resources :crews
+      # crew routes 
+      resources :directors
     end
   end
 
