@@ -14,3 +14,8 @@ json.videos movie.videos do |video|
                 :video_file_size, :video_updated_at
   json.video_path video.video
 end
+
+json.videos movie.videos do |vid|
+  json.extract! vid, :video_file_name, :video_content_type, :video_file_size, :video_updated_at
+  json.video_path vid.video
+end
