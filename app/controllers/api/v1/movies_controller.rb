@@ -49,7 +49,7 @@ module Api
       # Movie /Movies.json
       def create
         parameters = movie_params.dup
-        parameters.delete(:posters)
+        parameters.delete(:images)
         parameters.delete(:genres)
         parameters.delete(:videos)
         parameters.delete(:actors)
@@ -109,7 +109,7 @@ module Api
         valid_params.concat([:page])
         actor_params = Actor.attribute_names
         actor_params.concat([phone_numbers: [[:phone_number, :type]]])
-        valid_params.concat([posters: [], videos: [], genres: [], actors: [actor_params]])
+        valid_params.concat([images: [], videos: [], genres: [], actors: [actor_params]])
         params.permit(valid_params)
       end
     end

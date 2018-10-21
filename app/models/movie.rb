@@ -46,8 +46,8 @@ class Movie
   end
   
   def save_attachments(params)
-    if params[:pictures]
-      params[:pictures].each { |pic| images.create(pic: pic, model: 'movie') }
+    if params[:images]
+      params[:images].each { |pic| images.create(pic: pic, model: 'movie') }
     else
       save_image
     end
@@ -55,6 +55,13 @@ class Movie
       params[:videos].each { |vid| videos.create(video: vid, model: 'movie') }
     else
       save_videos
+    end
+    if params[:genres]
+       params[:genres].each { |genre_id| 
+          gn = Genre.find_by(id: genre_id)
+          genres <<  gn unless genre_ids.include?(genre_id)
+       }
+    else
     end
   end
   

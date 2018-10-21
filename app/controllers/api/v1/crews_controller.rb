@@ -48,7 +48,7 @@ module Api
       # POST /crew.json
       def create
         parameters = crew_params.dup
-        parameters.delete(:pictures)
+        parameters.delete(:images)
         parameters.delete(:videos)
         @crew = Crew.new(parameters)
 
@@ -100,7 +100,7 @@ module Api
         [:first_name, :last_name].each_with_object(params) do |key, obj|
           params.require(key)
         end
-        valid_params.concat([:page, movie_ids: [], pictures: [], videos: []])
+        valid_params.concat([:page, movie_ids: [], images: [], videos: []])
         params.permit(valid_params)
       end
     end

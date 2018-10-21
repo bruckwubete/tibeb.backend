@@ -23,8 +23,8 @@ class Director
   end
   
   def save_attachments(params)
-    if params[:pictures]
-      params[:pictures].each { |pic| images.create(pic: pic, model: 'director') }
+    if params[:images]
+      params[:images].each { |pic| images.create(pic: pic, model: 'director') }
     else
       save_image
     end

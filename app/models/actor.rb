@@ -15,11 +15,23 @@ class Actor
   end
 
   def save_image()
-    images.create(model: 'actor') if images.nil?
+    images.create(model: 'actor') if images.empty?
+  end
+  
+  def save_videos()
+    videos.create(model: 'actor') if videos.empty?
   end
   
   def save_attachments(params)
-    params[:pictures].each { |pic| images.create(pic: pic, model: 'actor') } if params[:pictures]
-    params[:videos].each { |vid| videos.create(video: vid) } if params[:videos]
+    if params[:images]
+      params[:images].each { |pic| images.create(pic: pic, model: 'actor') }
+    else
+      save_image
+    end
+    if params[:videos]
+      params[:videos].each { |vid| videos.create(video: vid,  model: 'actor') }
+    else
+      save_videos
+    end
   end
 end
