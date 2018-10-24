@@ -7,6 +7,7 @@ class Movie
   attr_accessor :actors
   attr_accessor :directors
   attr_accessor :crews
+  attr_accessor :writers
 
   embeds_many :images
   embeds_many :videos
@@ -14,6 +15,7 @@ class Movie
   has_and_belongs_to_many :actors
   has_and_belongs_to_many :directors
   has_and_belongs_to_many :crews
+  has_and_belongs_to_many :writers
 
   field :adult, type: Boolean, default: false
   field :budget, type: Float, default: 0
@@ -63,6 +65,7 @@ class Movie
        }
     else
     end
+    Helpers.create_or_find_actors(self, params)
   end
   
   module Helpers

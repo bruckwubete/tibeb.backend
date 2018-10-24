@@ -1,5 +1,22 @@
 module MoviesHelper
   def create_or_find_actors(movie, params)
+    return if params[:actors].blank?
+    params[:actors].each{|actor_params|
+      @actor = Actor.find_or_create_by(id: actor_params[:_id] || '') do |actor|
+        (actor_params[:phone_numbers] || []).each{|phone_number_params|
+          Phonenumber.find_or_create_by(id: phone_number_params[:_id] || '') do |number|
+            number.update(phone_number_params)
+            actor.phone_numbers.push(number)
+          end
+        }
+      end
+      @actor.update(actor_params)
+      movie.actors.push(@actor)
+      movie.save!
+    }
+  end
+  
+  def create_or_find_actors2(movie, params)
     return unless params[:actors]
     created_actors = []
     params[:actors].each do |actor|
@@ -38,14 +55,14 @@ module MoviesHelper
     end
   end
 
-  def find_genres(movies, params)
+  def find_genres(movie, params)
     return unless params[:genres]
-    params[:genres].each do |genre|
+    params[:genres].each do |genre_type|
       begin
-        movies.genres.push(Genre.find_by(type: genre))
+        movie.genres.push(Genre.find_by(type: genre_type))
       rescue Mongoid::Errors::DocumentNotFound
         raise Error::ActorError,
-              _message = "Failed to Find Genre with type #{genre}"
+              _message = "Failed to Find Genre with type #{genre_type}"
       end
     end
   end

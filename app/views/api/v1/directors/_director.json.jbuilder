@@ -1,4 +1,4 @@
-json.except! director, :images
+json.except! director, :images, :videos
 
 json.pictures director.images do |pic|
   json.extract! pic, :pic_file_name, :pic_content_type,

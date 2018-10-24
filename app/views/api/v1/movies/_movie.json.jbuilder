@@ -1,4 +1,4 @@
-json.except! movie, :images, :video, :actor_ids, :genre_ids
+json.except! movie, :images, :videos, :actor_ids, :genre_ids
 
 json.images movie.images do |pic|
   json.extract! pic, :pic_file_name, :pic_content_type,
@@ -13,5 +13,9 @@ end
 
 
 json.actors {json.array! movie.actors, partial: 'api/v1/actors/actor', as: :actor}
+json.directors {json.array! movie.directors, partial: 'api/v1/directors/director', as: :director}
+json.crews {json.array! movie.crews, partial: 'api/v1/crews/crew', as: :crew}
+json.writers {json.array! movie.writers, partial: 'api/v1/writers/writer', as: :writer}
+
 json.genres movie.genres
 
