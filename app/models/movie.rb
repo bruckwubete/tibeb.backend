@@ -65,7 +65,7 @@ class Movie
        }
     else
     end
-    Helpers.create_or_find_actors(self, params)
+    Helpers.create_or_find_movie_attributes(self, params)
   end
   
   module Helpers
