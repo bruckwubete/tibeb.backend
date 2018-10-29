@@ -11,6 +11,8 @@ Rails.application.routes.draw do
       resources :crews
       # crew routes 
       resources :directors
+      # crew writers 
+      resources :writers
     end
   end
 
