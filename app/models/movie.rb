@@ -24,7 +24,7 @@ class Movie
   field :popularity, type: Integer, default: 0
   field :release_date, type: Time, default: Time.now
   field :runtime, type: Integer, default: 0
-  field :status, type: String, default: ''
+  field :in_cinema, type: Boolean, default: ''
   field :title, type: String, default: ''
   field :vote_average, type: Float, default: 0
   field :vote_count, type: Integer, default: 0
