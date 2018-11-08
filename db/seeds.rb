@@ -10,30 +10,56 @@
 # Genre.create(type: 'action')
 # Genre.create(type: 'comedy')
 
-# require 'faker/movie'
+require_relative  'faker/data'
 
-# puts MovieFaker.new().get_rand_movie
+movies = [] 
+actors = []
+directors = []
+crews = []
+writers = []
 
-    @movie = {
-    adult: Faker::Boolean.boolean(0.2),
-    budget: Faker::Number.number(5),
-    homepage: Faker::Avatar.image,
-    overview: Faker::Lorem.paragraph + " " + Faker::Lorem.paragraph,
-    popularity: Faker::Number.number(3),
-    release_date: Faker::Date.between(Date.today.prev_year, Date.today),
-    runtime: Faker::Number.number(7),
-    in_cinema: Faker::Boolean.boolean(),
-    title: Faker::Book.title,
-    vote_average:  Faker::Number.number(3),
-    vote_count: Faker::Number.number(4)
+
+1..30.times{
+    movies << get_rand_movie
+}
+
+1..100.times{
+    actors << get_rand_actor
+    directors << get_rand_director
+    crews << get_rand_crew
+    writers << get_rand_writer
+}
+
+actors.each(&:save)
+directors.each(&:save)
+crews.each(&:save)
+writers.each(&:save)
+
+movies.each{|movie|
+    actors.sample(rand(1..99)).each{|actor|
+        movie.actors << actor
+        actor.movies << movie 
+        actor.save!
     }
     
-    def get_rand_movie
-        Movie.new(@movie)
-    end
+    directors.sample(rand(1..3)).each{|director|
+        movie.directors << director
+        director.movies << movie 
+        director.save!
+    }
     
+    crews.sample(rand(1..99)).each{|crew|
+        movie.crews << crew
+        crew.movies << movie 
+        crew.save!
+    }
     
-puts get_rand_movie.to_json
-
+    writers.sample(rand(1..3)).each{|writer|
+        movie.writers << writer
+        writer.movies << movie 
+        writer.save!
+    }
+    movie.save!
+}
 
 

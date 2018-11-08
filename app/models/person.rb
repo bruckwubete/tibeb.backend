@@ -20,7 +20,7 @@ module Person
     field :nick_name, type: String
     field :bio, type: String
     field :dob, type: Date
-    field :deceased, type: Time, default: false
+    field :deceased, type: Boolean, default: false
     field :dod, type: Date
 
 
