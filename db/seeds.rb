@@ -1,23 +1,14 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
-#
-# Genre.create(type: 'romance')
-# Genre.create(type: 'action')
-# Genre.create(type: 'comedy')
-
 require_relative  'faker/data'
+
+#seed genres
+['romance', 'comedy', 'action', 'thriller', 'horror', 'documentary', 'kids', 'suspense', 'drama'].each{|type| Genre.create(type: type)}
 
 movies = [] 
 actors = []
 directors = []
 crews = []
 writers = []
-
+genres = Genre.all
 
 1..30.times{
     movies << get_rand_movie
@@ -59,6 +50,13 @@ movies.each{|movie|
         writer.movies << movie 
         writer.save!
     }
+    
+    genres.sample(rand(1..3)).each{|genre|
+        movie.genres << genre
+        genre.movies << movie 
+        genre.save!
+    }
+    
     movie.save!
 }
 

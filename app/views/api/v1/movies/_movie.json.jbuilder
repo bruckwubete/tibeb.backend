@@ -1,4 +1,6 @@
-json.except! movie, :images, :videos, :actor_ids, :genre_ids, :crew_ids, :director_ids, :writer_ids
+json.except! movie, :images, :videos, :actor_ids, :genre_ids, :crew_ids, :director_ids, :writer_ids, :_id
+
+json.id movie.id.to_s
 
 json.images movie.images do |pic|
   json.extract! pic, :pic_file_name, :pic_content_type,

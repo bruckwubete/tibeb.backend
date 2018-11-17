@@ -1,4 +1,6 @@
-json.except! actor, :images, :videos
+json.except! actor, :images, :videos, :_id
+
+json.id actor.id.to_s
 
 json.pictures actor.images do |pic|
   json.extract! pic, :pic_file_name, :pic_content_type,

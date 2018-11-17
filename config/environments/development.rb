@@ -25,7 +25,6 @@ Rails.application.configure do
   #   :user_name => "bruckwendu80@gmail.com",
   #   :password => "Mynameissalem%5",
   # }
-  config.default_per_page = 5
   config.cache_classes = false
 
   # Do not eager load code on boot.

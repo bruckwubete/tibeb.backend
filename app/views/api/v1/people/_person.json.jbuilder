@@ -1,1 +1,0 @@
-json.except! person, :id

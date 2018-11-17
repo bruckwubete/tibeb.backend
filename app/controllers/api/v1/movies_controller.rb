@@ -19,8 +19,8 @@ module Api
       # GET /Movies
       # GET /Movies.json
       def index
-        page_number = params[:page] ? params[:page][:number] : 1
-        page_size = params[:page]? params[:page][:size] : Rails.application.config.default_per_page
+        page_number = params[:page] && params[:page][:number] ? params[:page][:number] : Rails.configuration.default_page
+        page_size = params[:page] && params[:page][:size]? params[:page][:size] : Rails.configuration.default_per_page
         @movies = Movie.includes(:actors).all.page(page_number).per(page_size)
       end
 

@@ -1,6 +1,6 @@
 class Movie
   include Mongoid::Document
-  paginates_per 5
+  paginates_per Rails.configuration.default_per_page
   attr_accessor :images
   attr_accessor :videos
   attr_accessor :genres
@@ -28,6 +28,8 @@ class Movie
   field :title, type: String, default: ''
   field :vote_average, type: Float, default: 0
   field :vote_count, type: Integer, default: 0
+  
+  # before_save :save
 
   # def save_attachments(params)
   #   params[:posters].each { |pic| images.create(pic: pic, model: 'movie') } if params[:posters]

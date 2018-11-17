@@ -31,6 +31,8 @@ module Tibeb
     #
     config.autoload_paths += %W(#{config.root}/lib)
     config.exceptions_app = routes
+    config.default_per_page = 6
+    config.default_page = 1
 
   end
 end
