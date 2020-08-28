@@ -18,16 +18,25 @@ class Movie
   has_and_belongs_to_many :writers
 
   field :adult, type: Boolean, default: false
-  field :budget, type: Float, default: 0
+  field :backdrop_path, type: String, default: ''
+  field :belongs_to_collection, type: Boolean, default: false
+  field :budget, type: Float, default: 0.0
   field :homepage, type: String, default: ''
+  field :imdb_id, type: String, default: ''
+  field :original_language, type: String, default: 'en'
+  field :original_title, type: String, default: ''
   field :overview, type: String, default: ''
   field :popularity, type: Integer, default: 0
+  field :poster_path, type: String, default: ''
   field :release_date, type: Time, default: Time.now
+  field :revenue, type: Float, default: 0.0
   field :runtime, type: Integer, default: 0
-  field :in_cinema, type: Boolean, default: ''
+  field :status, type: String, default: ''
+  field :tagline, type: String, default: ''
   field :title, type: String, default: ''
-  field :vote_average, type: Float, default: 0
-  field :vote_count, type: Integer, default: 0
+  field :video, type: Boolean, default: false
+  field :vote_average, type: Float, default: 0.0
+  field :vote_count, type: Integer, default: 0.0
   
   # before_save :save
 

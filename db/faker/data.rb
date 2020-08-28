@@ -9,7 +9,6 @@ def get_rand_movie
         popularity: Faker::Number.number(3),
         release_date: Faker::Date.between(Date.today.prev_year(50), Date.today),
         runtime: Faker::Number.number(7),
-        in_cinema: Faker::Boolean.boolean(),
         title: Faker::Book.title,
         vote_average:  Faker::Number.number(3),
         vote_count: Faker::Number.number(4)

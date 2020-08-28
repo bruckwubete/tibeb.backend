@@ -45,6 +45,34 @@ module Api
       # GET /Movies/1/edit
       def edit; end
 
+      # GET /movies/popular
+      # GET /movies/popular.json
+      def popular
+        @api_response = Tmdb::Movie.popular
+        @movies = []
+        puts @api_response.results[0]
+        @api_response.results.each do |movie|
+          @movies.push(Movie.new(movie.to_h))
+        end
+      end
+
+      # GET /en/movies/:id/detail/
+      # GET /en/movies/:id/show.json
+      def detail
+        mv = Tmdb::Movie.detail(params[:id].to_i).to_h
+        mv = mv.delete_if { |key, value| %w[production_companies spoken_languages production_countries genres].include?(key.to_s) }
+        @movie = Movie.new(mv.to_h)
+        respond_to do |format|
+          if @movie
+            format.json { render :show, status: :created }
+          else
+            format.json do
+              render json: @movie.errors, status: :unprocessable_entity
+            end
+          end
+        end
+      end
+
       # Movie /Movies
       # Movie /Movies.json
       def create
@@ -118,7 +146,7 @@ module Api
         writer_params = Writer.attribute_names
         writer_params.concat(phone_number_params)
         
-        valid_params.concat([images: [], videos: [], genres: [], actors: [actor_params]], directors: [director_params], crews: [crew_params], writers: [writer_params])
+        #valid_params.concat([images: [], videos: [], genres: [], actors: [actor_params]], directors: [director_params], crews: [crew_params], writers: [writer_params])
         params.permit(valid_params)
       end
     end

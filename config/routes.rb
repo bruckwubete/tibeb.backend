@@ -3,6 +3,9 @@ Rails.application.routes.draw do
     namespace :v1 do
       # movies routes
       resources :movies
+      get '/en/movies/popular', to: 'movies#popular'
+      get '/en/movies/:id', to: 'movies#detail'
+
       # shows routes
       resources :shows
       # actor routes
